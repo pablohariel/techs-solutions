@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Solucoes Tecnologicas",
+    "slug": "mobile",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "idontknow"
+    },
+    "android": {
+      "package": "com.solutions.technologics"
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
+  }
+}
