@@ -42,7 +42,7 @@ module.exports = {
                 }
             } else {
 
-            const { name, email, address, solutionName, imgs, videos } = req.body;
+            const { name, email, address, solutionName, imgs, videos, coordinate } = req.body;
 
             const data = {
                 solutionName,
@@ -50,7 +50,8 @@ module.exports = {
                 userEmail: email,
                 userAddress: address,
                 imgs,
-                videos
+                videos,
+                geolocation: coordinate
             }
             const response = await Solution.create(data);
 

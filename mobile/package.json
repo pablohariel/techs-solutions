@@ -15,6 +15,7 @@
     "expo": "~37.0.3",
     "expo-constants": "~9.0.0",
     "expo-image-picker": "~8.1.0",
+    "expo-location": "^8.1.0",
     "expo-updates": "~0.1.0",
     "lottie-react-native": "^3.3.2",
     "pusher-js": "^5.1.1",

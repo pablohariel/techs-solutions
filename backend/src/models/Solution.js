@@ -21,7 +21,7 @@ const SolutionSchema = new Schema({
         type: [{}]
     },
     geolocation: {
-        type: String
+        type: {}
     } 
 });
 

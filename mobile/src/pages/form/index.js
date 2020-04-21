@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 
 // image picker expo
 import Constants from 'expo-constants';
+import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
 // image picker react
@@ -24,7 +25,8 @@ export default function Form() {
     const [address, setAddress] = useState('');
     const [solutionName, setSolutionName] = useState('');
     const [imgs, setImgs] = useState([]);
-    const [vds, setVds] = useState(null);
+    const [vds, setVds] = useState([]);
+    const [coordinate, setCoordinate] = useState('')
     const [sending, setSending] = useState(false);
 
     const navigation = useNavigation();
@@ -36,6 +38,15 @@ export default function Form() {
     async function handleSend(event) {
         event.preventDefault();
 
+        const { granted } = await requestPermissionsAsync();
+        
+        if(granted) {
+            const { coords } = await getCurrentPositionAsync({
+                enableHighAccuracy: true
+            });
+            setCoordinate(coords);
+        } 
+        console.log(coordinate);
         if(!solutionName) {
             alert('Nome da solução não inserido!');
             return;
@@ -46,12 +57,18 @@ export default function Form() {
             return;
         }
 
+        if(vds.length < 1) {
+            alert('Nenhum video selecionado!');
+            return;
+        }
+
         let data = {
             name,
             email,
             address,
             solutionName,
-            imgs
+            imgs,
+            coordinate
         };
 
         const videos = new FormData();
@@ -76,13 +93,6 @@ export default function Form() {
             }
             images.append('files', newFile);
         });
-
-        // const videos = new FormData();
-        // videos.append('video', {
-        //     uri: video.path,
-        //     type: 'video/mp4',
-        //     name: solutionName
-        // });
 
         const config = {
             headers: {
@@ -121,20 +131,22 @@ export default function Form() {
             setAddress('');
             setSolutionName('');
             setImgs([]);
-            setVds(null);
+            setVds([]);
             
         } catch(err) {
 
             setSending(false);
             alert('Não foi possível enviar a solução, tente novamente.');
             console.log(err);
-
         }
     }
 
     // image picker
     useEffect(() => {
         getPermissionAsync();
+        PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
     }, [0])
 
     async function getPermissionAsync() {
