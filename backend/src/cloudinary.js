@@ -6,7 +6,7 @@ dotenv.config();
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
-    api_key: '',
+    api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
@@ -15,8 +15,9 @@ exports.uploads = (file, folder) => {
         cloudinary.uploader.upload(file, (result) => {
             resolve({
                 url: result.url,
-                id: result.public_id
+                folder: result.public_id
             })
+            console.log(result);
         }, {
             resource_type: "auto",
             folder: folder

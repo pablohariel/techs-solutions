@@ -24,7 +24,7 @@ export default function Form() {
     const [address, setAddress] = useState('');
     const [solutionName, setSolutionName] = useState('');
     const [imgs, setImgs] = useState([]);
-    const [video, setVideo] = useState(null);
+    const [vds, setVds] = useState(null);
     const [sending, setSending] = useState(false);
 
     const navigation = useNavigation();
@@ -36,6 +36,16 @@ export default function Form() {
     async function handleSend(event) {
         event.preventDefault();
 
+        if(!solutionName) {
+            alert('Nome da solução não inserido!');
+            return;
+        }
+
+        if(imgs.length < 1) {
+            alert('Nenhuma foto selecionada!');
+            return;
+        }
+
         let data = {
             name,
             email,
@@ -43,6 +53,17 @@ export default function Form() {
             solutionName,
             imgs
         };
+
+        const videos = new FormData();
+        vds.forEach((vd, i) => {
+            const newFile = {
+                uri: vd.path,
+                type: 'video/mp4',
+                name: solutionName,
+                solutionName: solutionName
+            }
+            videos.append('files', newFile);
+        });
 
         const images = new FormData();
 
@@ -53,7 +74,7 @@ export default function Form() {
                 name: solutionName,
                 solutionName: solutionName
             }
-            images.append('imgs', newFile);
+            images.append('files', newFile);
         });
 
         // const videos = new FormData();
@@ -65,28 +86,49 @@ export default function Form() {
 
         const config = {
             headers: {
-              Accept: 'application/json',
+              Accept: 'application/json',   
               'Content-Type': 'multipart/form-data',
             }
         }
 
         try {
             setSending(true);
-            const responseImages = await api.post('images', images, config);
-            // const responseVideo = await api.post('videos', videos, config);
+            const responseVideos = await api.post('solutions', videos, config);
+            const responseImages = await api.post('solutions', images, config);
+
+            const imgs_files = [];
+            for(const file of responseImages.data.data) {
+                console.log(file.url);
+                imgs_files.push(file);
+            }
+
+            data.imgs = imgs_files;
+
+            const videos_files = [];
+            for(const file of responseVideos.data.data) {
+                console.log(file.url);
+                videos_files.push(file);
+            }
+
+            data.videos = videos_files;
+
             const responseSolutions = await api.post('solutions', data);
             setSending(false);
+            console.log('Response: ' + responseSolutions);
             alert('Enviado com sucesso.');
             setName('');
             setEmail('');
             setAddress('');
             setSolutionName('');
             setImgs([]);
-            setVideo(null);
+            setVds(null);
+            
         } catch(err) {
+
             setSending(false);
             alert('Não foi possível enviar a solução, tente novamente.');
             console.log(err);
+
         }
     }
 
@@ -122,10 +164,12 @@ export default function Form() {
     async function pickVideo() {
         try {
             ImagePicker.openPicker({
-                mediaType: "video",
-            }).then(video => {
-                console.log(video);
-                setVideo({ uri: video.path, name: 'name_test', type: 'video/mp4' });
+                width: 300,
+                height: 400,
+                multiple: true
+            }).then(videos => {
+                console.log(videos);
+                setVds(videos);
             });
         } catch (E) {
           console.log(E);

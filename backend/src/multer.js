@@ -5,12 +5,12 @@ const storage_image = multer.diskStorage({
         callback(null, "./uploads");
     },
     filename(req, file, callback) {
-        callback(null, `${file.originalname}_${Date.now()}` + '.jpeg');
+        callback(null, `${file.originalname}_${Date.now()}` + file.originalname);
     }
  });
 
  const image_filter = (req, file, callback) => {
-     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'video/mp4') {
          callback(null,true);   
      } else {
          callback({ message: 'Unsupported File Format' }, false);
