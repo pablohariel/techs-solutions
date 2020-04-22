@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
+
+// react native paper
+import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 // image picker expo
 import Constants from 'expo-constants';
@@ -158,43 +161,82 @@ export default function Form() {
         }
     };
 
-    async function pickImage() {
+    async function pickImageCamera() {
+        try {
+            ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+            }).then(image => {
+                setImgs([image]);
+            });
+        } catch (E) {
+          console.log(E);
+        }
+    };
+
+    async function pickImageGallery() {
+        var invalidFile = false;
         try {
             ImagePicker.openPicker({
                 width: 300,
                 height: 400,
                 multiple: true
             }).then(images => {
-                console.log(images);
-                setImgs(images);
+                images.map(image => {
+                    if(image.mime !== 'image/jpeg') {
+                        invalidFile = true;
+                    }
+                });
+                if(!invalidFile == true) {
+                    console.log(images);
+                    setImgs(images);
+                } else {
+                    setImgs([]);
+                    alert('Arquivo selecionado invalido!');
+                }
             });
         } catch (E) {
           console.log(E);
         }
     };
 
-    async function pickVideo() {
+    async function pickVideoCamera() {
+        try {
+            ImagePicker.openCamera({
+                mediaType: 'video'
+            }).then(video => {
+                setVds([video]);
+            });
+        } catch (E) {
+          console.log(E);
+        }
+    };
+
+    async function pickVideoGallery() {
+        var invalidFile = false;
         try {
             ImagePicker.openPicker({
                 width: 300,
                 height: 400,
                 multiple: true
             }).then(videos => {
-                console.log(videos);
-                setVds(videos);
+                videos.map(video => {
+                    if(video.mime !== 'video/mp4') {
+                        invalidFile = true;
+                    }
+                });
+                if(!invalidFile == true) {
+                    console.log(videos);
+                    setVds(videos);
+                } else {
+                    setVds([]);
+                    alert('Arquivo selecionado invalido!');
+                }
             });
         } catch (E) {
           console.log(E);
         }
     };
-
-    function test() {
-        let cont = 0;
-        while(cont < 3) {
-            return <Text>Oi</Text>
-            cont++;
-        }
-    }
 
     return (
         <ScrollView  keyboardShouldPersistTaps="always">
@@ -212,11 +254,39 @@ export default function Form() {
                         <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
                     </View>
                     <View style={styles.mediaButtons}>
-                        <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
-                                <Image source={cameraImg} /> 
+                        <TouchableOpacity style={styles.mediaButton} onPress={() => Alert.alert(
+                            "Alert title",
+                            "",
+                            [
+                                {
+                                    text: "Selecionar da galeria",
+                                    onPress: pickImageGallery
+                                },
+                                {
+                                    text: "Tira foto",
+                                    onPress: pickImageCamera
+                                }
+                            ]
+                        )}>
+                            <Image source={cameraImg} /> 
+                            {imgs.length > 0 && <Text>{imgs.length} imagens</Text>}
                         </TouchableOpacity> 
-                        <TouchableOpacity style={styles.mediaButton} onPress={pickVideo}>
-                                <Image source={videoImg} /> 
+                        <TouchableOpacity style={styles.mediaButton} onPress={() => Alert.alert(
+                            "Alert title",
+                            "",
+                            [
+                                {
+                                    text: "Selecionar da galeria",
+                                    onPress: pickVideoGallery
+                                },
+                                {
+                                    text: "Gravar video",
+                                    onPress: pickVideoCamera
+                                }
+                            ]
+                        )}>
+                            <Image source={videoImg} /> 
+                            {vds.length > 0 && <Text>{vds.length} videos</Text>}
                         </TouchableOpacity> 
                     </View>
 
