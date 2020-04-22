@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 
 // react native paper
-import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
+// import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 // image picker expo
 import Constants from 'expo-constants';
@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import api from '../../services/api';
 
+import Gallery from './gallery';
 import Logo from '../../assets/logo.png';
 import cameraImg from '../../assets/buttons/media/camera_icon.png'
 import videoImg from '../../assets/buttons/media/video_icon.png'
@@ -35,7 +36,7 @@ export default function Form() {
     const navigation = useNavigation();
 
     async function navigateBack() {
-        navigation.goBack();    
+        navigation.goBack();  
     }
 
     async function handleSend(event) {
@@ -167,7 +168,12 @@ export default function Form() {
                 width: 300,
                 height: 400,
             }).then(image => {
-                setImgs([image]);
+                if(imgs.length > 0) {
+                    const final_array = imgs.concat([image]);
+                    setImgs(final_array);
+                } else {
+                    setImgs([image]);
+                }
             });
         } catch (E) {
           console.log(E);
@@ -188,8 +194,12 @@ export default function Form() {
                     }
                 });
                 if(!invalidFile == true) {
-                    console.log(images);
-                    setImgs(images);
+                    if(imgs.length > 0) {
+                        const final_array = imgs.concat(images);
+                        setImgs(final_array);
+                    } else {
+                        setImgs(images);
+                    }
                 } else {
                     setImgs([]);
                     alert('Arquivo selecionado invalido!');
@@ -205,7 +215,12 @@ export default function Form() {
             ImagePicker.openCamera({
                 mediaType: 'video'
             }).then(video => {
-                setVds([video]);
+                if(vds.length > 0) {
+                    const final_array = vds.concat([video]);
+                    setVds(final_array);
+                } else {
+                    setVds([video]);
+                }
             });
         } catch (E) {
           console.log(E);
@@ -226,8 +241,15 @@ export default function Form() {
                     }
                 });
                 if(!invalidFile == true) {
-                    console.log(videos);
-                    setVds(videos);
+                    // console.log(videos);
+                    if(vds.length > 0) {
+                        const final_array = vds.concat(videos);
+                        console.log(final_array);
+                        setVds(final_array);
+                    } else {
+                        setVds(videos);
+                    }
+                    
                 } else {
                     setVds([]);
                     alert('Arquivo selecionado invalido!');
@@ -266,11 +288,12 @@ export default function Form() {
                                     text: "Tira foto",
                                     onPress: pickImageCamera
                                 }
-                            ]
+                            ],
+                            { cancelable: true }
                         )}>
                             <Image source={cameraImg} /> 
-                            {imgs.length > 0 && <Text>{imgs.length} imagens</Text>}
                         </TouchableOpacity> 
+                        {imgs.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': imgs, 'setFiles': setImgs})}><Text>ver imagens</Text></TouchableOpacity>}
                         <TouchableOpacity style={styles.mediaButton} onPress={() => Alert.alert(
                             "Alert title",
                             "",
@@ -283,11 +306,13 @@ export default function Form() {
                                     text: "Gravar video",
                                     onPress: pickVideoCamera
                                 }
-                            ]
+                            ],
+                            { cancelable: true }
                         )}>
                             <Image source={videoImg} /> 
-                            {vds.length > 0 && <Text>{vds.length} videos</Text>}
                         </TouchableOpacity> 
+                        {vds.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': vds, 'setFiles': setVds})}><Text>ver videos</Text></TouchableOpacity>}
+
                     </View>
 
                      {/* sending animation */}
@@ -297,58 +322,10 @@ export default function Form() {
                         autoPlay
                     />}
 
-                    {/* {sending && <LottieView
-                        source={require("../../assets/lottie/black_preloader.json")}
-                        loop
-                        autoPlay
-                    />} */}
-
-                    {/* <TouchableOpacity style={styles.sendButton} onPress={handleSend}> */}
                     <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
                             <Text style={{color: '#fff'}}>Enviar</Text>
                     </TouchableOpacity> 
-                </View>
-               
-
-            {/* {sending === false ? (
-                <View style={styles.backgroundImg}>
-                    <View style={styles.header}>
-                        <Image source={Logo} style={styles.logoImg} />
-                        <TouchableOpacity onPress={navigateBack}>
-                            <Feather name="arrow-left" size={28} color="#8FB28A" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.inputs}>
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={name} placeholder="Nome" onChangeText={event => setName(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={email} placeholder="Email" onChangeText={event => setEmail(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={address} placeholder="Endereço" onChangeText={event => setAddress(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
-                    </View>
-                    <View style={styles.mediaButtons}>
-                        <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
-                                <Image source={cameraImg} /> 
-                        </TouchableOpacity> 
-                        <TouchableOpacity style={styles.mediaButton} onPress={pickVideo}>
-                                <Image source={videoImg} /> 
-                        </TouchableOpacity> 
-                    </View>
-
-                    {/* {!sending && <LottieView
-                        source={require("../../assets/lottie/blue_preloader.json")}
-                        loop
-                        autoPlay
-                    />} */}
-
-                    {/* <TouchableOpacity style={styles.sendButton} onPress={handleSend}> */}
-                    {/* <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-                            <Text style={{color: '#fff'}}>Enviar</Text>
-                    </TouchableOpacity> 
-                </View> */}
-            {/* ) : ( <View style={styles.backgroundImg}>
-                    <LottieView source={require("../../assets/lottie/blue_preloader.json")} loop autoPlay />
-                </View> 
-            )} */} 
-            
+                </View>   
         </ScrollView>
     );
 }
