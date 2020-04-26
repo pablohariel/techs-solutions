@@ -6,6 +6,7 @@ import LottieView from 'lottie-react-native';
 
 // react native paper
 // import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 // image picker expo
 import Constants from 'expo-constants';
@@ -31,6 +32,13 @@ export default function Form() {
     const [imgs, setImgs] = useState([]);
     const [vds, setVds] = useState([]);
     const [coordinate, setCoordinate] = useState('')
+    const [showAlert, setShowAlert] = useState(false);
+    const [errAlert, setErrAlert] = useState(false);
+    const [successAlert, setSuccessAlert] = useState(false);
+
+    const [imageAlert, setImageAlert] = useState(false);
+    const [videoAlert, setVideoAlert] = useState(false);
+
     const [sending, setSending] = useState(false);
 
     const navigation = useNavigation();
@@ -42,6 +50,8 @@ export default function Form() {
     async function handleSend(event) {
         event.preventDefault();
 
+        setShowAlert(false);
+
         const { granted } = await requestPermissionsAsync();
         
         if(granted) {
@@ -51,18 +61,18 @@ export default function Form() {
             setCoordinate(coords);
         } 
         console.log(coordinate);
-        if(!solutionName) {
-            alert('Nome da solução não inserido!');
+        if(!solutionName || !name || !email || !address) {
+            setErrAlert(true);
             return;
         }
 
         if(imgs.length < 1) {
-            alert('Nenhuma foto selecionada!');
+            setErrAlert(true);
             return;
         }
 
         if(vds.length < 1) {
-            alert('Nenhum video selecionado!');
+            setErrAlert(true);
             return;
         }
 
@@ -129,7 +139,7 @@ export default function Form() {
             const responseSolutions = await api.post('solutions', data);
             setSending(false);
             console.log('Response: ' + responseSolutions);
-            alert('Enviado com sucesso.');
+            setSuccessAlert(true);
             setName('');
             setEmail('');
             setAddress('');
@@ -138,9 +148,8 @@ export default function Form() {
             setVds([]);
             
         } catch(err) {
-
             setSending(false);
-            alert('Não foi possível enviar a solução, tente novamente.');
+            setErrAlert(true);
             console.log(err);
         }
     }
@@ -162,6 +171,28 @@ export default function Form() {
         }
     };
 
+    async function handleMediaSelected(mediaType, option) {
+        if(mediaType == 'image') {
+            setImageAlert(false);
+            if(option == 'gallery') {
+                pickImageGallery();
+            }
+            if(option == 'camera') {
+                pickImageCamera();
+            }
+        }
+
+        if(mediaType == 'video') {
+            setVideoAlert(false);
+            if(option == 'gallery') {
+                pickVideoGallery();
+            }
+            if(option == 'camera') {
+                pickVideoCamera();
+            }
+        }
+    }
+
     async function pickImageCamera() {
         try {
             ImagePicker.openCamera({
@@ -181,11 +212,12 @@ export default function Form() {
     };
 
     async function pickImageGallery() {
+        setImageAlert(false);
         var invalidFile = false;
         try {
             ImagePicker.openPicker({
-                width: 300,
-                height: 400,
+                width: 1000,
+                height: 1000,
                 multiple: true
             }).then(images => {
                 images.map(image => {
@@ -211,6 +243,7 @@ export default function Form() {
     };
 
     async function pickVideoCamera() {
+        setVideoAlert(false);
         try {
             ImagePicker.openCamera({
                 mediaType: 'video'
@@ -241,6 +274,7 @@ export default function Form() {
                     }
                 });
                 if(!invalidFile == true) {
+                    
                     // console.log(videos);
                     if(vds.length > 0) {
                         const final_array = vds.concat(videos);
@@ -253,6 +287,7 @@ export default function Form() {
                 } else {
                     setVds([]);
                     alert('Arquivo selecionado invalido!');
+                    setVideoAlert(false)
                 }
             });
         } catch (E) {
@@ -275,54 +310,159 @@ export default function Form() {
                         <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={address} placeholder="Endereço" onChangeText={event => setAddress(event)} />
                         <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
                     </View>
+
+                    {/* alert */}
+                    <AwesomeAlert
+                        show={showAlert}
+                        showProgress={false}
+                        title="Enviar solução?"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Não, cancelar"
+                        confirmText="Sim, enviar"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => {
+                            setShowAlert(false);
+                        }}
+                        onConfirmPressed={handleSend}
+                        onDismiss={() => {
+                            setShowAlert(false);
+                        }}
+                    />
+
+                    {/* sending alert */}
+                    <AwesomeAlert
+                        show={sending}
+                        showProgress={true}
+                        title="Enviando..."
+                        closeOnTouchOutside={false}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={false}
+                        cancelText="Não, cancelar"
+                        confirmText="Sim, enviar"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => {
+                            setShowAlert(false);
+                        }}
+                        onConfirmPressed={handleSend}
+                        
+                    />
+
+                    {/* error alert */}
+                    <AwesomeAlert
+                        show={errAlert}
+                        showProgress={false}
+                        title="Não foi possível enviar a solução"
+                        message="Revise os dados e tente novamente"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Cancelar"
+                        confirmText="Revisar"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => {
+                            setErrAlert(false);
+                        }}
+                        onConfirmPressed={() => {
+                            setErrAlert(false);
+                        }}
+                        onDismiss={() => {
+                            setErrAlert(false);
+                        }}
+                    />
+
+                    {/* success alert */}
+                    <AwesomeAlert
+                        show={successAlert}
+                        showProgress={false}
+                        title="Solução enviada com sucesso!"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        cancelText="Cancelar"
+                        confirmText="Fechar"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => {
+                            setErrAlert(false);
+                        }}
+                        onConfirmPressed={() => {
+                            setSuccessAlert(false);
+                        }}
+                        onDismiss={() => {
+                            setSuccessAlert(false);
+                        }}
+                    />
+
+                    {/* image alert */}
+                    <AwesomeAlert
+                        show={imageAlert}
+                        showProgress={false}
+                        title="Selecionar imagem"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Galeria"
+                        confirmText="Camera"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => handleMediaSelected('image', 'gallery')}
+                        onConfirmPressed={() => handleMediaSelected('image', 'camera')}
+                        onDismiss={() => {
+                            setImageAlert(false);
+                        }}
+                    />
+
+                    {/* video alert */}
+                    <AwesomeAlert
+                        show={videoAlert}
+                        showProgress={false}
+                        title="Selecionar video"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={true}
+                        showConfirmButton={true}
+                        cancelText="Galeria"
+                        confirmText="Camera"
+                        confirmButtonColor="#8FB28A"
+                        onCancelPressed={() => handleMediaSelected('video', 'gallery')}
+                        onConfirmPressed={() => handleMediaSelected('video', 'camera')}
+                        onDismiss={() => {
+                            setVideoAlert(false);
+                        }}
+                    />
+
                     <View style={styles.mediaButtons}>
-                        <TouchableOpacity style={styles.mediaButton} onPress={() => Alert.alert(
-                            "Alert title",
-                            "",
-                            [
-                                {
-                                    text: "Selecionar da galeria",
-                                    onPress: pickImageGallery
-                                },
-                                {
-                                    text: "Tira foto",
-                                    onPress: pickImageCamera
-                                }
-                            ],
-                            { cancelable: true }
-                        )}>
-                            <Image source={cameraImg} /> 
-                        </TouchableOpacity> 
-                        {imgs.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': imgs, 'setFiles': setImgs})}><Text>ver imagens</Text></TouchableOpacity>}
-                        <TouchableOpacity style={styles.mediaButton} onPress={() => Alert.alert(
-                            "Alert title",
-                            "",
-                            [
-                                {
-                                    text: "Selecionar da galeria",
-                                    onPress: pickVideoGallery
-                                },
-                                {
-                                    text: "Gravar video",
-                                    onPress: pickVideoCamera
-                                }
-                            ],
-                            { cancelable: true }
-                        )}>
-                            <Image source={videoImg} /> 
-                        </TouchableOpacity> 
-                        {vds.length > 0 && <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': vds, 'setFiles': setVds})}><Text>ver videos</Text></TouchableOpacity>}
+                        <View style={styles.mediaButtonGroup}>
+                            {imgs.length > 0 ? ( <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': imgs, 'setFiles': setImgs})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
+                            <TouchableOpacity style={styles.mediaButton} onPress={() => setImageAlert(true)}>
+                                <Image source={cameraImg} /> 
+                            </TouchableOpacity> 
+                        </View>
+                        
+                        <View style={styles.mediaButtonGroup}>
+                            <TouchableOpacity style={styles.mediaButton} onPress={() => setVideoAlert(true)}>
+                                <Image source={videoImg} /> 
+                            </TouchableOpacity> 
+                            {vds.length > 0 ? (<TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': vds, 'setFiles': setVds})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
+                        </View>
+                       
 
                     </View>
 
                      {/* sending animation */}
-                    {sending && <LottieView
+                    {/* {sending && <LottieView
                         source={require("../../assets/lottie/green_preloader.json")}
                         loop
                         autoPlay
-                    />}
+                    />} */}
 
-                    <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+                    {/* <TouchableOpacity style={styles.sendButton} onPress={handleSend}> */}
+                    <TouchableOpacity style={styles.sendButton} onPress={() => setShowAlert(true)}>
                             <Text style={{color: '#fff'}}>Enviar</Text>
                     </TouchableOpacity> 
                 </View>   

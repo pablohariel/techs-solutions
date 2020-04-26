@@ -6,22 +6,25 @@ export default StyleSheet.create({
     backgroundImg: {
         flex: 1,
         backgroundColor: '#fff',
-        justifyContent: 'space-around',
-        paddingHorizontal: 24,
+        justifyContent: 'space-between',
+        // paddingHorizontal: 24,
         // paddingTop: Constants.statusBarHeight,
-        margin: 0,
-        height: Dimensions.get('screen').height - 24
+        height: Dimensions.get('window').height - 24,
+        maxHeight: Dimensions.get('window').height - 24
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingHorizontal: 24,
+        paddingTop: 10
     },
     logoImg: {
         width: 70,
-        height: 70,
+        height: 70
     },  
     inputs: {
+        paddingHorizontal: 24,
     },  
     textInput: {
         height: 50,
@@ -38,7 +41,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
     },
     mediaButton: {
-        marginHorizontal: 20
+        marginHorizontal: 20,
     },
     sendButton: {
         backgroundColor:'#8FB28A',
@@ -46,6 +49,11 @@ export default StyleSheet.create({
         borderRadius: 4,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom:10
+        marginBottom: 20,
+        marginHorizontal: 24,
     },
+    mediaButtonGroup: {
+        alignItems: 'center',
+        flexDirection: 'row'
+    }
 });

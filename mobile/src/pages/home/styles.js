@@ -1,16 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    container: {
-         justifyContent: 'center',
-         alignItems: 'center'
-    },
     backgroundImg: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems: 'center',
-        padding: 0,
-        margin: 0,
+        // alignItems: 'center',
+        // resizeMode: 'cover',
     },
     buttons: {
         justifyContent: 'center',
@@ -19,13 +14,11 @@ export default StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         maxWidth: '100%',
-        padding: 3,
     },
     button: {
-        width: '46%',
-        height: 140,
+        width: '40%',
+        height: 160,
         margin: 6,
-        borderRadius: 6
     },
     buttonImg: {
         width: '100%',

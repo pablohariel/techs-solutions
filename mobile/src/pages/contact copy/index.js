@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview'
 import backgroundImg from '../../assets/about_us/about_us_background.png'
 import styles from './styles';
 
-export default function Info() {
+export default function AboutUs() {
     return (
         <ImageBackground style={styles.container} source={backgroundImg}>
 
@@ -15,7 +15,7 @@ export default function Info() {
                 source={{
                     html:
                         "<style>p{, font-size: 20px}</style>" +
-                        "<p style='text-align: justify; font-size: 50; line-height: 2;'>" +
+                        "<p style='text-align: justify; font-size: 40;'>" +
                         "O aplicativo é basicamente uma plataforma que permite o agricultor tirar fotos e vídeos de suas soluções," + 
                         "além de informações adicionais e, enviar para o grupo de pesquisa.  Os mesmos vão ser analisados, pelos responsáveis técnicos, podendo somar em um site. " +
                         "O aplicativo surge a partir da pesquisa “Análise do papel dos agricultores na produção de soluções tecnológicas para a agricultura familiar”, é um projeto de" +

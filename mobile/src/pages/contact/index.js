@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
+
+import backgroundImg from '../../assets/contact/contact_background.png'
+import styles from './styles';
 
 export default function Contact() {
     return (
-        <View>
-            <Text>Contact</Text>
-        </View>
+        <ImageBackground style={styles.container} source={backgroundImg}>
+
+            
+
+        </ImageBackground> 
+           
     );
 }

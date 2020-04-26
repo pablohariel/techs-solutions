@@ -6,22 +6,27 @@ const SolutionSchema = new Schema({
         required: true
     },
     userName: {
-        type: String
+        type: String,
+        required: true
     },
     userEmail: {
-        type: String
+        type: String,
+        required: true
     },
     userAdress: {
-        type: String
+        type: String,
+        required: true
     },
     imgs: {
-        type: [{}]
+        type: [{}],
+        required: true
     },
     videos: {
         type: [{}]
     },
     geolocation: {
-        type: {}
+        type: {},
+        required: true
     } 
 });
 
