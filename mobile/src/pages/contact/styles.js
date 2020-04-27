@@ -14,7 +14,5 @@ export default StyleSheet.create({
         // borderWidth: 2,
         maxWidth:  Dimensions.get('window').width,
         maxHeight: Dimensions.get('window').height - 24,
-
-        
     }
 })

@@ -36,9 +36,13 @@ import styles from './styles';
             {modalVisible == true &&
                 <Modal style={styles.modal} animationType={'fade'} transparent={true} visible={modalVisible} onRequestClose={() => {}}>
                     <View style={styles.modal}>
-                        <Text style={styles.text} onPress={() => setModalVisible(false)}>Fechar</Text>
+                        <View style={styles.buttons}>
+
+                            <Text style={styles.text} onPress={() => setModalVisible(false)}>Fechar</Text>
+                            <Text style={styles.text} onPress={() => deleteFile(modalImage)}>Remover</Text>
+
+                        </View>
                         <Image source={{ uri: modalImage.path }} style={styles.image}></Image>
-                        <Text style={styles.text} onPress={() => deleteFile(modalImage)}>Excluir</Text>
 
                     </View>
                 </Modal>

@@ -35,9 +35,11 @@ export default function Form() {
     const [showAlert, setShowAlert] = useState(false);
     const [errAlert, setErrAlert] = useState(false);
     const [successAlert, setSuccessAlert] = useState(false);
-
     const [imageAlert, setImageAlert] = useState(false);
     const [videoAlert, setVideoAlert] = useState(false);
+    const [invalidFileAlert, setInvalidFileAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [alertOpened, setAlertOpened] = useState();
 
     const [sending, setSending] = useState(false);
 
@@ -62,16 +64,19 @@ export default function Form() {
         } 
         console.log(coordinate);
         if(!solutionName || !name || !email || !address) {
+            setAlertOpened(true);
             setErrAlert(true);
             return;
         }
 
         if(imgs.length < 1) {
+            setAlertOpened(true);
             setErrAlert(true);
             return;
         }
 
         if(vds.length < 1) {
+            setAlertOpened(true);
             setErrAlert(true);
             return;
         }
@@ -117,6 +122,7 @@ export default function Form() {
 
         try {
             setSending(true);
+            setAlertOpened(true)
             const responseVideos = await api.post('solutions', videos, config);
             const responseImages = await api.post('solutions', images, config);
 
@@ -138,8 +144,11 @@ export default function Form() {
 
             const responseSolutions = await api.post('solutions', data);
             setSending(false);
+            setAlertOpened(false);
             console.log('Response: ' + responseSolutions);
+
             setSuccessAlert(true);
+            setAlertOpened(true);
             setName('');
             setEmail('');
             setAddress('');
@@ -157,6 +166,7 @@ export default function Form() {
     // image picker
     useEffect(() => {
         getPermissionAsync();
+        console.log(videoAlert);
         PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           );
@@ -172,8 +182,8 @@ export default function Form() {
     };
 
     async function handleMediaSelected(mediaType, option) {
+        console.log(videoAlert);
         if(mediaType == 'image') {
-            setImageAlert(false);
             if(option == 'gallery') {
                 pickImageGallery();
             }
@@ -183,7 +193,6 @@ export default function Form() {
         }
 
         if(mediaType == 'video') {
-            setVideoAlert(false);
             if(option == 'gallery') {
                 pickVideoGallery();
             }
@@ -230,11 +239,12 @@ export default function Form() {
                         const final_array = imgs.concat(images);
                         setImgs(final_array);
                     } else {
+                        setAlertOpened(true);
                         setImgs(images);
                     }
                 } else {
-                    setImgs([]);
-                    alert('Arquivo selecionado invalido!');
+                    setAlertOpened(true);
+                    setInvalidFileAlert(true);
                 }
             });
         } catch (E) {
@@ -274,20 +284,18 @@ export default function Form() {
                     }
                 });
                 if(!invalidFile == true) {
-                    
-                    // console.log(videos);
                     if(vds.length > 0) {
                         const final_array = vds.concat(videos);
                         console.log(final_array);
                         setVds(final_array);
                     } else {
+                        setAlertOpened(true);
                         setVds(videos);
                     }
                     
                 } else {
-                    setVds([]);
-                    alert('Arquivo selecionado invalido!');
-                    setVideoAlert(false)
+                    setAlertOpened(true);
+                    setErrorMessage('Arquivo invalido')
                 }
             });
         } catch (E) {
@@ -328,7 +336,24 @@ export default function Form() {
                         }}
                         onConfirmPressed={handleSend}
                         onDismiss={() => {
+                            setAlertOpened(false)
                             setShowAlert(false);
+                        }}
+                    />
+
+                    {/* file invalid alert */}
+                    <AwesomeAlert
+                        show={invalidFileAlert}
+                        showProgress={false}
+                        title="Arquivo selecionado inválido!"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={false}
+                        confirmButtonColor="#8FB28A"
+                        onDismiss={() => {
+                            setAlertOpened(false)
+                            setInvalidFileAlert(false)
                         }}
                     />
 
@@ -348,8 +373,12 @@ export default function Form() {
                             setShowAlert(false);
                         }}
                         onConfirmPressed={handleSend}
+                        onDismiss={() => {
+                            setAlertOpened(false)
+                        }}
                         
                     />
+
 
                     {/* error alert */}
                     <AwesomeAlert
@@ -359,8 +388,8 @@ export default function Form() {
                         message="Revise os dados e tente novamente"
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
-                        showCancelButton={true}
-                        showConfirmButton={true}
+                        showCancelButton={false}
+                        showConfirmButton={false}
                         cancelText="Cancelar"
                         confirmText="Revisar"
                         confirmButtonColor="#8FB28A"
@@ -371,6 +400,7 @@ export default function Form() {
                             setErrAlert(false);
                         }}
                         onDismiss={() => {
+                            setAlertOpened(false)
                             setErrAlert(false);
                         }}
                     />
@@ -391,9 +421,11 @@ export default function Form() {
                             setErrAlert(false);
                         }}
                         onConfirmPressed={() => {
+                            setAlertOpened(false)
                             setSuccessAlert(false);
                         }}
                         onDismiss={() => {
+                            setAlertOpened(false)
                             setSuccessAlert(false);
                         }}
                     />
@@ -408,11 +440,12 @@ export default function Form() {
                         showCancelButton={true}
                         showConfirmButton={true}
                         cancelText="Galeria"
-                        confirmText="Camera"
+                        confirmText="Câmera"
                         confirmButtonColor="#8FB28A"
                         onCancelPressed={() => handleMediaSelected('image', 'gallery')}
                         onConfirmPressed={() => handleMediaSelected('image', 'camera')}
                         onDismiss={() => {
+                            setAlertOpened(false)
                             setImageAlert(false);
                         }}
                     />
@@ -422,47 +455,54 @@ export default function Form() {
                         show={videoAlert}
                         showProgress={false}
                         title="Selecionar video"
+                        message={errorMessage}
+                        messageStyle={{color: 'red'}}
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
                         showCancelButton={true}
                         showConfirmButton={true}
                         cancelText="Galeria"
-                        confirmText="Camera"
+                        confirmText="Câmera"
                         confirmButtonColor="#8FB28A"
-                        onCancelPressed={() => handleMediaSelected('video', 'gallery')}
+                        onCancelPressed={() => { 
+                            handleMediaSelected('video', 'gallery')
+                        }}
                         onConfirmPressed={() => handleMediaSelected('video', 'camera')}
                         onDismiss={() => {
-                            setVideoAlert(false);
+                            setAlertOpened(false)
+                            setVideoAlert(false)
                         }}
                     />
 
                     <View style={styles.mediaButtons}>
                         <View style={styles.mediaButtonGroup}>
                             {imgs.length > 0 ? ( <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': imgs, 'setFiles': setImgs})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
-                            <TouchableOpacity style={styles.mediaButton} onPress={() => setImageAlert(true)}>
+                            <TouchableOpacity style={styles.mediaButton} disabled={alertOpened} onPress={() => {
+                                setAlertOpened(true)
+                                setErrorMessage('')
+                                setImageAlert(true)
+                            }}>
                                 <Image source={cameraImg} /> 
                             </TouchableOpacity> 
                         </View>
                         
                         <View style={styles.mediaButtonGroup}>
-                            <TouchableOpacity style={styles.mediaButton} onPress={() => setVideoAlert(true)}>
+                            <TouchableOpacity style={styles.mediaButton} disabled={alertOpened} onPress={() => {
+                                setVideoAlert(true)
+                                setAlertOpened(true)
+                                setErrorMessage('')
+
+                            }}>
                                 <Image source={videoImg} /> 
                             </TouchableOpacity> 
                             {vds.length > 0 ? (<TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': vds, 'setFiles': setVds})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
                         </View>
-                       
-
                     </View>
 
-                     {/* sending animation */}
-                    {/* {sending && <LottieView
-                        source={require("../../assets/lottie/green_preloader.json")}
-                        loop
-                        autoPlay
-                    />} */}
-
-                    {/* <TouchableOpacity style={styles.sendButton} onPress={handleSend}> */}
-                    <TouchableOpacity style={styles.sendButton} onPress={() => setShowAlert(true)}>
+                    <TouchableOpacity style={styles.sendButton} disabled={alertOpened} onPress={() => {
+                        setAlertOpened(true)
+                        setShowAlert(true)
+                    }}>
                             <Text style={{color: '#fff'}}>Enviar</Text>
                     </TouchableOpacity> 
                 </View>   

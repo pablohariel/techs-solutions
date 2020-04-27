@@ -17,10 +17,10 @@ export default function Routes() {
             <AppStack.Navigator screenOptions={{ headerShown: false }}>
                 <AppStack.Screen name="Home" component={Home} />
                 <AppStack.Screen name="Form" component={Form} />
-                <AppStack.Screen name="Contact" component={Contact} />
-                <AppStack.Screen name="Info" component={Info} />
-                <AppStack.Screen name="AboutUs" component={AboutUs} />
-                <AppStack.Screen name="Gallery" component={Gallery} />
+                <AppStack.Screen name="Contact" component={Contact} options={{headerShown: true, title: 'Contatos'}} />
+                <AppStack.Screen name="Info" component={Info} options={{headerShown: true, title: 'Informações'}} />
+                <AppStack.Screen name="AboutUs" component={AboutUs} options={{headerShown: true, title: 'Sobre nós'}} />
+                <AppStack.Screen name="Gallery" component={Gallery} options={{headerShown: true, title: 'Galeria'}} />
             </AppStack.Navigator>
         </NavigationContainer>
     );

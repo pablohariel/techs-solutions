@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
 
 export default StyleSheet.create({
     backgroundImg: {
@@ -16,9 +17,9 @@ export default StyleSheet.create({
         maxWidth: '100%',
     },
     button: {
-        width: '40%',
-        height: 160,
-        margin: 6,
+        width: '38%',
+        height: Dimensions.get('window').width - (Dimensions.get('window').width - 150),
+        margin: 10,
     },
     buttonImg: {
         width: '100%',

@@ -11,7 +11,7 @@ export default function Info() {
 
             <WebView 
                 originWhitelist={['*']}
-                style={{maxHeight: 800, width: 300}}
+                style={styles.text}
                 source={{
                     html:
                         "<style>p{, font-size: 20px}</style>" +

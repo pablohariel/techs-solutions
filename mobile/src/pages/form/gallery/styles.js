@@ -27,5 +27,9 @@ export default StyleSheet.create({
     },
     text: {
         color: '#fff'
+    },
+    buttons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 })

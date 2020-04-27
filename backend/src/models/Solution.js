@@ -13,7 +13,7 @@ const SolutionSchema = new Schema({
         type: String,
         required: true
     },
-    userAdress: {
+    userAddress: {
         type: String,
         required: true
     },
