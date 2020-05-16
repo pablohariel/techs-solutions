@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import LottieView from 'lottie-react-native';
+import { CheckBox } from 'react-native-elements';
+import { WebView } from 'react-native-webview';
 
 // react native paper
 // import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
@@ -29,9 +30,16 @@ export default function Form() {
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [solutionName, setSolutionName] = useState('');
+    const [findedProblem, setFindedProblem] = useState('');
     const [imgs, setImgs] = useState([]);
     const [vds, setVds] = useState([]);
-    const [coordinate, setCoordinate] = useState('')
+    const [coordinate, setCoordinate] = useState('');
+    const [termsBoxChecked, setTermsBoxChecked] = useState(false);
+    const [forceDisable, setForceDisable] = useState(false);
+
+    const [modalFormVisible, setModalFormVisible] = useState(false);
+
+    // alerts
     const [showAlert, setShowAlert] = useState(false);
     const [errAlert, setErrAlert] = useState(false);
     const [successAlert, setSuccessAlert] = useState(false);
@@ -39,7 +47,8 @@ export default function Form() {
     const [videoAlert, setVideoAlert] = useState(false);
     const [invalidFileAlert, setInvalidFileAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [alertOpened, setAlertOpened] = useState();
+    const [alertOpened, setAlertOpened] = useState(false);
+    const [checkboxAlert, setCheckboxAlert] = useState(false);
 
     const [sending, setSending] = useState(false);
 
@@ -53,6 +62,12 @@ export default function Form() {
         event.preventDefault();
 
         setShowAlert(false);
+
+        if(!termsBoxChecked) {
+            setAlertOpened(true);
+            setCheckboxAlert(true);
+            return;
+        }
 
         const { granted } = await requestPermissionsAsync();
         
@@ -185,26 +200,26 @@ export default function Form() {
         console.log(videoAlert);
         if(mediaType == 'image') {
             if(option == 'gallery') {
-                pickImageGallery();
+                await pickImageGallery();
             }
             if(option == 'camera') {
-                pickImageCamera();
+                await pickImageCamera();
             }
         }
 
         if(mediaType == 'video') {
             if(option == 'gallery') {
-                pickVideoGallery();
+                await pickVideoGallery();
             }
             if(option == 'camera') {
-                pickVideoCamera();
+                await pickVideoCamera();
             }
         }
     }
 
     async function pickImageCamera() {
         try {
-            ImagePicker.openCamera({
+            await ImagePicker.openCamera({
                 width: 300,
                 height: 400,
             }).then(image => {
@@ -218,13 +233,13 @@ export default function Form() {
         } catch (E) {
           console.log(E);
         }
+        setImageAlert(false);
     };
 
     async function pickImageGallery() {
-        setImageAlert(false);
         var invalidFile = false;
         try {
-            ImagePicker.openPicker({
+            await ImagePicker.openPicker({
                 width: 1000,
                 height: 1000,
                 multiple: true
@@ -250,12 +265,13 @@ export default function Form() {
         } catch (E) {
           console.log(E);
         }
+        setImageAlert(false);
+
     };
 
     async function pickVideoCamera() {
-        setVideoAlert(false);
         try {
-            ImagePicker.openCamera({
+            await ImagePicker.openCamera({
                 mediaType: 'video'
             }).then(video => {
                 if(vds.length > 0) {
@@ -268,12 +284,13 @@ export default function Form() {
         } catch (E) {
           console.log(E);
         }
+        setVideoAlert(false);
     };
 
     async function pickVideoGallery() {
         var invalidFile = false;
         try {
-            ImagePicker.openPicker({
+            await ImagePicker.openPicker({
                 width: 300,
                 height: 400,
                 multiple: true
@@ -295,12 +312,16 @@ export default function Form() {
                     
                 } else {
                     setAlertOpened(true);
-                    setErrorMessage('Arquivo invalido')
+                    setInvalidFileAlert(true);
+                    // setAlertOpened(true);
+                    // setErrorMessage('Arquivo invalido')
                 }
+                setVideoAlert(false);
             });
         } catch (E) {
           console.log(E);
         }
+        
     };
 
     return (
@@ -309,14 +330,15 @@ export default function Form() {
                     <View style={styles.header}>
                         <Image source={Logo} style={styles.logoImg} />
                         <TouchableOpacity onPress={navigateBack}>
-                            <Feather name="arrow-left" size={28} color="#8FB28A" />
+                            <Feather name="arrow-left" size={28} color="#6FCF97" />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.inputs}>
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={name} placeholder="Nome" onChangeText={event => setName(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={email} placeholder="Email" onChangeText={event => setEmail(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={address} placeholder="Endereço" onChangeText={event => setAddress(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#8FB28A" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
+                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={name} placeholder="Nome" onChangeText={event => setName(event)} />
+                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={email} placeholder="Email" onChangeText={event => setEmail(event)} />
+                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={address} placeholder="Endereço" onChangeText={event => setAddress(event)} />
+                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
+                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={findedProblem} placeholder="Problema encontrado anteriormente" onChangeText={event => setFindedProblem(event)} />
                     </View>
 
                     {/* alert */}
@@ -330,7 +352,7 @@ export default function Form() {
                         showConfirmButton={true}
                         cancelText="Não, cancelar"
                         confirmText="Sim, enviar"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => {
                             setShowAlert(false);
                         }}
@@ -338,6 +360,23 @@ export default function Form() {
                         onDismiss={() => {
                             setAlertOpened(false)
                             setShowAlert(false);
+                        }}
+                    />
+
+                    {/* checkbox alert */}
+                    <AwesomeAlert
+                        show={checkboxAlert}
+                        showProgress={false}
+                        title="Aceite os termos de uso antes de continuar"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={false}
+                        confirmButtonColor="#6FCF97"
+                        onDismiss={() => {
+                            setCheckboxAlert(false);
+                            setAlertOpened(false);
+
                         }}
                     />
 
@@ -350,7 +389,7 @@ export default function Form() {
                         closeOnHardwareBackPress={false}
                         showCancelButton={false}
                         showConfirmButton={false}
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onDismiss={() => {
                             setAlertOpened(false)
                             setInvalidFileAlert(false)
@@ -368,7 +407,7 @@ export default function Form() {
                         showConfirmButton={false}
                         cancelText="Não, cancelar"
                         confirmText="Sim, enviar"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => {
                             setShowAlert(false);
                         }}
@@ -392,7 +431,7 @@ export default function Form() {
                         showConfirmButton={false}
                         cancelText="Cancelar"
                         confirmText="Revisar"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => {
                             setErrAlert(false);
                         }}
@@ -416,7 +455,7 @@ export default function Form() {
                         showConfirmButton={true}
                         cancelText="Cancelar"
                         confirmText="Fechar"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => {
                             setErrAlert(false);
                         }}
@@ -441,7 +480,7 @@ export default function Form() {
                         showConfirmButton={true}
                         cancelText="Galeria"
                         confirmText="Câmera"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => handleMediaSelected('image', 'gallery')}
                         onConfirmPressed={() => handleMediaSelected('image', 'camera')}
                         onDismiss={() => {
@@ -455,15 +494,13 @@ export default function Form() {
                         show={videoAlert}
                         showProgress={false}
                         title="Selecionar video"
-                        message={errorMessage}
-                        messageStyle={{color: 'red'}}
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
                         showCancelButton={true}
                         showConfirmButton={true}
                         cancelText="Galeria"
                         confirmText="Câmera"
-                        confirmButtonColor="#8FB28A"
+                        confirmButtonColor="#6FCF97"
                         onCancelPressed={() => { 
                             handleMediaSelected('video', 'gallery')
                         }}
@@ -474,28 +511,40 @@ export default function Form() {
                         }}
                     />
 
+                    <View style={styles.termsView}>
+                        <CheckBox
+                            disabled={alertOpened}
+                            title='Aceito os termos de uso.'
+                            containerStyle={alertOpened == false ? styles.checkbox : styles.checkboxDisabled}
+                            fontFamily='roboto'
+                            textStyle={styles.checkboxText}
+                            checkedColor='#6FCF97'
+                            checked={termsBoxChecked}
+                            onPress={() => setTermsBoxChecked(!termsBoxChecked)}
+                        />
+                        <Text style={alertOpened == false && !checkboxAlert ? styles.checkboxLink : styles.checkboxLinkDisabled} onPress={() => setModalFormVisible(true)} disabled={alertOpened}>Ler termos</Text>
+                    </View>
+                    
+
                     <View style={styles.mediaButtons}>
                         <View style={styles.mediaButtonGroup}>
-                            {imgs.length > 0 ? ( <TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': imgs, 'setFiles': setImgs})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
                             <TouchableOpacity style={styles.mediaButton} disabled={alertOpened} onPress={() => {
                                 setAlertOpened(true)
-                                setErrorMessage('')
                                 setImageAlert(true)
                             }}>
-                                <Image source={cameraImg} /> 
+                                <Image style={styles.cameraButton} source={cameraImg} /> 
                             </TouchableOpacity> 
+                            {imgs.length > 0 ? (<TouchableOpacity  style={styles.galleryLink} onPress={() => navigation.navigate('Galeria', {'files': imgs, 'setFiles': setImgs})}><Text>ver imagens</Text></TouchableOpacity>) : (<Text style={styles.galleryLink}></Text>)}
                         </View>
                         
                         <View style={styles.mediaButtonGroup}>
                             <TouchableOpacity style={styles.mediaButton} disabled={alertOpened} onPress={() => {
                                 setVideoAlert(true)
                                 setAlertOpened(true)
-                                setErrorMessage('')
-
                             }}>
-                                <Image source={videoImg} /> 
+                                <Image style={styles.videoButton} source={videoImg} /> 
                             </TouchableOpacity> 
-                            {vds.length > 0 ? (<TouchableOpacity onPress={() => navigation.navigate('Gallery', {'files': vds, 'setFiles': setVds})}><Text>ver</Text></TouchableOpacity>) : (<Text></Text>)}
+                            {vds.length > 0 ? (<TouchableOpacity style={styles.galleryLink} onPress={() => navigation.navigate('Galeria', {'files': vds, 'setFiles': setVds})}><Text>ver videos</Text></TouchableOpacity>) : (<Text style={styles.galleryLink}></Text>)}
                         </View>
                     </View>
 
@@ -506,6 +555,30 @@ export default function Form() {
                             <Text style={{color: '#fff'}}>Enviar</Text>
                     </TouchableOpacity> 
                 </View>   
+
+                {/* termos de uso */}
+                {modalFormVisible == true &&
+                    <Modal style={styles.modal} animationType={'fade'} transparent={true} visible={modalFormVisible} onRequestClose={() => {}}>
+                        <View style={styles.modal}>
+                            <View style={styles.buttons}>
+                                <Text style={styles.modalButton} onPress={() => setModalFormVisible(false)}>Fechar</Text>
+                            </View>
+                            <ScrollView>
+                            <WebView 
+                                originWhitelist={['*']}
+                                style={styles.modalText}
+                                source={{
+                                    html:
+                                        "<style>p{, font-size: 20px}</style>" +
+                                        "<p style='text-align: justify; font-size: 42; line-height: 2; padding: 40;'>" +
+                                        "Autorizo o uso dos dados no projeto 'Observatório de soluções tecnológicas da Agricultura Familiar', sejam esses destinados à divulgação ao público e/ou apenas para uso interno." +
+                                        "</p>"
+                                }}
+                            />
+                            </ScrollView>
+                        </View>
+                    </Modal>
+                }  
         </ScrollView>
     );
 }

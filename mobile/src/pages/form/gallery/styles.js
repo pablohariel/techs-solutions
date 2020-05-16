@@ -9,11 +9,13 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
     },
     imageWrap: {
+        marginTop: 2,
         margin: 2,
         padding: 2,
         height: (Dimensions.get('screen').height/3) - 12,
         width: (Dimensions.get('screen').width/2) - 4,
         backgroundColor: '#fff',
+        borderWidth: 2
     },
     image: {
         flex: 1,

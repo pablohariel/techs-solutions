@@ -4,17 +4,22 @@ import { Dimensions, StatusBar } from 'react-native';
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: Dimensions.get('window').width - (Dimensions.get('window').width - 140),
-        paddingBottom: Dimensions.get('window').width - (Dimensions.get('window').width - 160),
-        // paddingTop: Constants.statusBarHeight,
-        // borderWidth: 2,
         maxWidth:  Dimensions.get('window').width,
-        maxHeight: Dimensions.get('window').height - 24,
+        maxHeight: Dimensions.get('window').height,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%'
+    },
+    mainView: {
+        marginTop: '19%',
+        width: '60%',
+        height: '64%'
     },
     text: {
-        paddingHorizontal: Dimensions.get('window').width - (Dimensions.get('window').width - 150),
+        width: '100%',
+        height: '100%',
+        borderWidth: 2,
+        borderColor: '#000'
     }
 })
