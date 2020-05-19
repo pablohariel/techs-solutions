@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Dimensions, StatusBar } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
     container: {
@@ -12,9 +13,9 @@ export default StyleSheet.create({
         height: '100%'
     },
     mainView: {
-        marginTop: '19%',
-        width: '60%',
-        height: '64%'
+        marginTop: hp('11%'),
+        width:  hp('34%'),
+        height: hp('64%')
     },
     text: {
         width: '100%',

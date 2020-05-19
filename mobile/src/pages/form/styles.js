@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import { Dimensions, StatusBar } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
     backgroundImg: {
@@ -16,21 +17,20 @@ export default StyleSheet.create({
     header: {
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between',    
         alignItems: 'center',
         paddingHorizontal: '8%',
-        paddingTop: '8%'
+        marginTop: 10
     },
     logoImg: {
-        // width: 70,
-        // height: 70
-        width: '18%',
-        height: '220%'
+        width: wp('20%'),
+        height: hp('12%'),
     },  
     inputs: {
         width: '90%',
-        marginTop: '10%',
+        marginTop: hp('0%'),
         paddingHorizontal: '6%',
+        justifyContent: 'center',
     },  
     textInput: {
         height: 40,
@@ -40,6 +40,7 @@ export default StyleSheet.create({
         borderBottomColor: '#6FCF97',
         padding: '1%',
         margin: '1%',
+        marginTop: hp('2%')
     },
     mediaButtons: {
         flexDirection: 'row',
@@ -49,6 +50,14 @@ export default StyleSheet.create({
     mediaButton: {
         marginHorizontal: '4%',
     },
+    // videoButton: {
+    //     width: wp('16%'),
+    //     height: hp('8%'),
+    // },
+    // cameraButton: {
+    //     width: wp('16%'),
+    //     height: hp('8%'),
+    // },
     sendButton: {
         width: '90%',
         backgroundColor:'#6FCF97',
@@ -64,14 +73,17 @@ export default StyleSheet.create({
         flexDirection: 'column',
     },
     galleryLink: {
-        marginTop: '10%'
+        marginTop: '10%',
+        borderBottomWidth: 1
     },
     termsView: {
-        width: '46%',
+        width: wp('50%'),
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         alignContent: 'center',
+        marginTop: hp('2%'),
+        marginLeft: '1%'
     },
     checkbox: {
         alignSelf: 'flex-start',
@@ -81,7 +93,7 @@ export default StyleSheet.create({
         left: 0,
         borderWidth: 0,
         marginRight: 0,
-        marginLeft: 0
+        marginLeft: 0,
 
     },
     checkboxDisabled: {
@@ -89,11 +101,12 @@ export default StyleSheet.create({
     },
     checkboxText: {
         height: 20,
-        fontWeight: '100',
+        fontWeight: 'normal',
         color: '#000',
     },
     checkboxLink: {
         height: 20,
+        fontWeight: 'normal',
         borderBottomWidth: 1
     },
     checkboxLinkDisabled: {
@@ -120,7 +133,7 @@ export default StyleSheet.create({
     },
     modalText: {
         backgroundColor: '#fff',
-        height: 160,
+        height: 200,
     }
 
 });

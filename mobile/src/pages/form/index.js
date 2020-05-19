@@ -102,7 +102,8 @@ export default function Form() {
             address,
             solutionName,
             imgs,
-            coordinate
+            coordinate,
+            findedProblem
         };
 
         const videos = new FormData();
@@ -168,6 +169,7 @@ export default function Form() {
             setEmail('');
             setAddress('');
             setSolutionName('');
+            setFindedProblem('');
             setImgs([]);
             setVds([]);
             
@@ -338,7 +340,20 @@ export default function Form() {
                         <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={email} placeholder="Email" onChangeText={event => setEmail(event)} />
                         <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={address} placeholder="Endereço" onChangeText={event => setAddress(event)} />
                         <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={solutionName} placeholder="Nome da solução" onChangeText={event => setSolutionName(event)} />
-                        <TextInput style={styles.textInput} placeholderTextColor="#747D88" value={findedProblem} placeholder="Problema encontrado anteriormente" onChangeText={event => setFindedProblem(event)} />
+                        <TextInput style={styles.textInput} autoComplete="false" placeholderTextColor="#747D88" value={findedProblem} placeholder="Problema encontrado anteriormente" onChangeText={event => setFindedProblem(event)} />
+                        <View style={styles.termsView}>
+                            <CheckBox
+                                disabled={alertOpened}
+                                title='Aceito os termos de uso.'
+                                containerStyle={styles.checkbox}
+                                fontFamily='roboto'
+                                textStyle={styles.checkboxText}
+                                checkedColor='#6FCF97'
+                                checked={termsBoxChecked}
+                                onPress={() => setTermsBoxChecked(!termsBoxChecked)}
+                            />
+                            <Text style={styles.checkboxLink} onPress={() => setModalFormVisible(true)} disabled={alertOpened}>Ler termos</Text>
+                        </View>
                     </View>
 
                     {/* alert */}
@@ -493,7 +508,7 @@ export default function Form() {
                     <AwesomeAlert
                         show={videoAlert}
                         showProgress={false}
-                        title="Selecionar video"
+                        title="Selecionar vídeo"
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
                         showCancelButton={true}
@@ -511,19 +526,7 @@ export default function Form() {
                         }}
                     />
 
-                    <View style={styles.termsView}>
-                        <CheckBox
-                            disabled={alertOpened}
-                            title='Aceito os termos de uso.'
-                            containerStyle={alertOpened == false ? styles.checkbox : styles.checkboxDisabled}
-                            fontFamily='roboto'
-                            textStyle={styles.checkboxText}
-                            checkedColor='#6FCF97'
-                            checked={termsBoxChecked}
-                            onPress={() => setTermsBoxChecked(!termsBoxChecked)}
-                        />
-                        <Text style={alertOpened == false && !checkboxAlert ? styles.checkboxLink : styles.checkboxLinkDisabled} onPress={() => setModalFormVisible(true)} disabled={alertOpened}>Ler termos</Text>
-                    </View>
+                    
                     
 
                     <View style={styles.mediaButtons}>

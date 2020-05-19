@@ -27,7 +27,11 @@ const SolutionSchema = new Schema({
     geolocation: {
         type: {},
         required: true
-    } 
+    } ,
+    findedProblem: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = model('Solution', SolutionSchema);

@@ -1,7 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { Dimensions } from 'react-native';
 
+
 export default StyleSheet.create({
+    
     backgroundImg: {
         flex: 1,
         justifyContent: 'space-between',
@@ -69,48 +71,44 @@ export default StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'flex-end'
+    },
+    textVideoTutorial: {
+        marginTop: 20,
+        fontFamily: 'Open Sans'
+    },
+
+    // video tutorial 
+    mainModal: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0, 0.9)',
+        justifyContent: 'center',
+        alignContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    childModal: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0, 0.9)',
+        alignItems: 'stretch'
+    },
+    modalButton: {
+        paddingTop: 10,
+        color: '#000'
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    modalText: {
+        backgroundColor: '#fff',
+        height: 200,
+    },
+    videoTutorial: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        bottom: 10,
+        right: 10,
     }
 });
-
-// /* Principal cta */
-
-// position: absolute;
-// left: 14.93%;
-// right: 14.93%;
-// top: 74.14%;
-// bottom: 19.21%;
-
-// /* Shadow principal cta */
-// box-shadow: 0px 2.76726px 2.21381px rgba(147, 120, 255, 0.0196802), 0px 6.6501px 5.32008px rgba(147, 120, 255, 0.0282725), 0px 12.5216px 10.0172px rgba(147, 120, 255, 0.035), 0px 22.3363px 17.869px rgba(147, 120, 255, 0.0417275), 0px 41.7776px 33.4221px rgba(147, 120, 255, 0.0503198), 0px 100px 80px rgba(147, 120, 255, 0.07);
-
-
-// /* Background */
-
-// position: absolute;
-// left: 0%;
-// right: 0%;
-// top: 0%;
-// bottom: 0%;
-
-
-
-
-// /* Discover the platform */
-
-// position: absolute;
-// left: 15.21%;
-// right: 15.21%;
-// top: 29.63%;
-// bottom: 29.63%;
-
-// font-family: Roboto;
-// font-style: normal;
-// font-weight: normal;
-// font-size: 40px;
-// line-height: 47px;
-// display: flex;
-// align-items: center;
-// text-align: center;
-
-// color: #FFFFFF;
 

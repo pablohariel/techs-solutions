@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
     header: {
@@ -6,9 +7,8 @@ export default StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: '8%',
-        paddingTop: '2%',
         backgroundColor: '#fff',
-        height: '12%',
+        height: hp('9%'),
         width: '100%',
         borderBottomWidth: 1,
         borderBottomColor: '#6FCF97'
