@@ -8,8 +8,6 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'space-between',
-        // paddingHorizontal: 24,
-        // paddingTop: Constants.statusBarHeight,
         height: Dimensions.get('window').height - 24,
         maxHeight: Dimensions.get('window').height,
         alignItems: 'center'
@@ -50,14 +48,6 @@ export default StyleSheet.create({
     mediaButton: {
         marginHorizontal: '4%',
     },
-    // videoButton: {
-    //     width: wp('16%'),
-    //     height: hp('8%'),
-    // },
-    // cameraButton: {
-    //     width: wp('16%'),
-    //     height: hp('8%'),
-    // },
     sendButton: {
         width: '90%',
         backgroundColor:'#6FCF97',
@@ -118,12 +108,13 @@ export default StyleSheet.create({
         flex: 1,
         padding: 30,
         backgroundColor: 'rgba(0,0,0, 0.9)',
-        justifyContent: 'center',
-        alignContent: 'center',
+
         flexDirection: 'column',
         borderWidth: 3
     },
     modalButton: {
+        marginTop: hp('20%'),
+        marginHorizontal: wp('10%'),
         paddingTop: 10,
         color: '#fff'
     },
@@ -131,9 +122,15 @@ export default StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    modalScroll: {
+        marginHorizontal: wp('10%'),
+        borderWidth: 5,
+        borderColor: '#6FCF97',
+        marginBottom: hp('44.1%')
+    },
     modalText: {
         backgroundColor: '#fff',
-        height: 200,
+        height: hp('20%')
+        
     }
-
 });

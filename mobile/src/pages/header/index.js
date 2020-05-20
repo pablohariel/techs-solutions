@@ -7,7 +7,7 @@ import Logo from '../../assets/logo.png';
 
 import styles from './styles';
 
-export default function Header() {
+export default function Header({ title }) {
 
     const navigation = useNavigation();
 
@@ -17,7 +17,7 @@ export default function Header() {
 
     return (
         <View style={styles.header}>
-            <Text style={{fontSize: 20, alignSelf: 'center'}}>Sobre nós</Text>
+            <Text style={{fontSize: 20, alignSelf: 'center'}}>{ title }</Text>
             <TouchableOpacity onPress={navigateBack}>
                 <Feather name="arrow-left" size={28} color="#6FCF97" />
             </TouchableOpacity>

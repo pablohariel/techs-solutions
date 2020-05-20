@@ -10,7 +10,7 @@ import styles from './styles';
 export default function AboutUs() {
     return (
         <ImageBackground style={styles.container} source={backgroundImg}>
-            <Header />
+            <Header title='Sobre nós' />
             <View style={styles.mainView}>
                 <WebView 
                     originWhitelist={['*']}

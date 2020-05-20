@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, PermissionsAndroid, Modal, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
 import { WebView } from 'react-native-webview';
 
+import HeaderComponent from '../header';
+
 // react native paper
-// import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 // image picker expo
@@ -19,11 +20,12 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import api from '../../services/api';
 
-import Gallery from './gallery';
 import Logo from '../../assets/logo.png';
 import cameraImg from '../../assets/buttons/media/camera_icon.png'
 import videoImg from '../../assets/buttons/media/video_icon.png'
 import styles from './styles';
+import backgroundImg from '../../assets/about_us/about_us_background.png'
+import { Header } from 'react-native/Libraries/NewAppScreen';
 
 export default function Form() {
     const [name, setName] = useState('');
@@ -77,8 +79,8 @@ export default function Form() {
             });
             setCoordinate(coords);
         } 
-        console.log(coordinate);
-        if(!solutionName || !name || !email || !address) {
+
+        if(!solutionName || !name || !email || !address || !findedProblem) {
             setAlertOpened(true);
             setErrAlert(true);
             return;
@@ -526,9 +528,6 @@ export default function Form() {
                         }}
                     />
 
-                    
-                    
-
                     <View style={styles.mediaButtons}>
                         <View style={styles.mediaButtonGroup}>
                             <TouchableOpacity style={styles.mediaButton} disabled={alertOpened} onPress={() => {
@@ -566,18 +565,18 @@ export default function Form() {
                             <View style={styles.buttons}>
                                 <Text style={styles.modalButton} onPress={() => setModalFormVisible(false)}>Fechar</Text>
                             </View>
-                            <ScrollView>
-                            <WebView 
-                                originWhitelist={['*']}
-                                style={styles.modalText}
-                                source={{
-                                    html:
-                                        "<style>p{, font-size: 20px}</style>" +
-                                        "<p style='text-align: justify; font-size: 42; line-height: 2; padding: 40;'>" +
-                                        "Autorizo o uso dos dados no projeto 'Observatório de soluções tecnológicas da Agricultura Familiar', sejam esses destinados à divulgação ao público e/ou apenas para uso interno." +
-                                        "</p>"
-                                }}
-                            />
+                            <ScrollView style={styles.modalScroll}>
+                                <WebView 
+                                    originWhitelist={['*']}
+                                    style={styles.modalText}
+                                    source={{
+                                        html:
+                                            "<style>p{, font-size: 50px}</style>" +
+                                            "<p style='text-align: justify; font-size: 50; line-height: 2; padding: 40;'>" +
+                                            "Autorizo o uso dos dados no projeto 'Observatório de soluções tecnológicas da Agricultura Familiar', sejam esses destinados à divulgação ao público e/ou apenas para uso interno." +
+                                            "</p>"
+                                    }}
+                                />
                             </ScrollView>
                         </View>
                     </Modal>
